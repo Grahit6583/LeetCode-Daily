@@ -1,0 +1,82 @@
+class Solution {
+public:
+    // T.C = O(4*(m*n))
+    // S.C = O(m*n)
+    int solve(int i, int j, int cost, vector<vector<int>> &grid, vector<vector<bool>> &visited, vector<vector<int>> dir, int m, int n){
+        if(i == m-1 && j == n-1){
+            return cost;
+        }
+
+        visited[i][j] = true;
+        int min_cost = INT_MAX;
+        for(int k=0; k<=3; k++){
+            int i_ = i + dir[k][0];
+            int j_ = j + dir[k][1];
+
+            if(i_ >= 0 && i_ < m && j_ >= 0 && j_ < n && !visited[i_][j_]){
+                int next_cost = cost + ((grid[i][j]-1 != k) ? 1 : 0);
+
+                min_cost = min(min_cost, solve(i_, j_, next_cost, grid, visited, dir, m, n));
+            }
+        }
+
+        visited[i][j] = false;
+        return min_cost;
+    }
+    int minCost(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+
+        vector<vector<int>> dir = {{0,1},{0,-1},{1,0},{-1,0}};
+        vector<vector<bool>> vis(m, vector<bool>(n,false));
+        return solve(0,0,0, grid, vis, dir, m, n);
+    }
+};
+//OPTIMAL APPROACH USING Dijkstra’s Algorithm
+
+class Solution {
+public:
+    // T.C = O(log(m*n)*(m*n))
+    // S.C = O(m*n)
+    int minCost(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+
+        vector<vector<int>> dir = {{0,1},{0,-1},{1,0},{-1,0}};
+
+        priority_queue<vector<int> , vector<vector<int>>, greater<>> pq;
+        vector<vector<int>> res(m, vector<int>(n, INT_MAX));
+
+        pq.push({0,0,0});
+        res[0][0] = 0;
+
+        while(!pq.empty()){
+            auto curr = pq.top();
+            pq.pop();
+
+            int cost = curr[0];
+            int i = curr[1];
+            int j = curr[2];
+
+            if(res[i][j] < cost){
+                continue;
+            }
+
+            for(int k=0; k<=3; k++){
+                int i_ = i + dir[k][0];
+                int j_ = j + dir[k][1];
+
+                if(i_ >=0 && j_ >=0 && i_ < m && j_ < n){
+                    int dircost = (grid[i][j]-1 != k) ? 1 : 0;
+
+                    int newcost = cost + dircost;
+                    if(res[i_][j_] > newcost){
+                        res[i_][j_] = newcost;
+                        pq.push({newcost, i_, j_});
+                    }
+                }
+            }
+        }
+        return res[m-1][n-1];
+    }
+};
