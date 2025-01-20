@@ -1,0 +1,133 @@
+////////////////////////////////BRUTE FORCE//////////////////////////////////////
+//Time Complexity: O(m² * n + m * n²)
+//Space Complexity: O(m * n)
+
+class Solution {
+public:
+    bool solve(vector<vector<int>> &mat, int i, int j, int m, int n){
+        bool flag = true;
+
+        for(int k=0; k<m; k++){
+            if(mat[k][j] != -1){
+                flag = false;
+                break;
+            }
+        }
+
+        if(flag){
+            return true;
+        }
+
+        for(int k=0; k<n; k++){
+            if(mat[i][k] != -1){
+                flag = true;
+                break;
+            }
+        }
+
+        if(flag == false){
+            return true;
+        }
+
+        return false;
+    }
+    int firstCompleteIndex(vector<int>& arr, vector<vector<int>>& mat) {
+        int m = mat.size();
+        int n = mat[0].size();
+
+        unordered_map<int,pair<int,int>> mp;
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                mp[mat[i][j]] = {i,j};
+            }
+        }
+
+        int a = m*n;
+        for(int k=0; k<a; k++){
+            int i = mp[arr[k]].first;
+            int j = mp[arr[k]].second;
+
+            mat[i][j] = -1;
+
+            if(solve(mat, i, j, m, n)){
+                return k;
+            }
+        }
+
+        return -1;
+    }
+};
+
+//////////////////////////////////////////////////BETTER APPROACH////////////////////////////////////////////////////////
+//Time Complexity: O(m * n)
+//Space Complexity: O(m * n)
+class Solution {
+public:
+    int firstCompleteIndex(vector<int>& arr, vector<vector<int>>& mat) {
+        int m = mat.size();
+        int n = mat[0].size();
+
+        unordered_map<int,pair<int,int>> mp;
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                mp[mat[i][j]] = {i,j};
+            }
+        }
+
+        int a = m*n;
+        vector<int> col(n,0);
+        vector<int> row(m,0);
+        for(int k=0; k<a; k++){
+            int i = mp[arr[k]].first;
+            int j = mp[arr[k]].second;
+
+            mat[i][j] = -1;
+            col[j]++;
+            row[i]++;
+            if(col[j] == m || row[i] == n){
+                return k;
+            }
+        }
+
+        return -1;
+    }
+};
+///////////////////////////////////////////////////////////OPTIMAL APPROACH/////////////////////////////////////////////////////////////////
+//Time Complexity: O(m * n)
+//Space Complexity: O(m * n)
+class Solution {
+public:
+    int firstCompleteIndex(vector<int>& arr, vector<vector<int>>& mat) {
+        int m = mat.size();
+        int n = mat[0].size();
+        int a = m*n;
+
+        unordered_map<int,int> mp;
+
+        for(int i=0; i<a; i++){
+            mp[arr[i]] = i;
+        }
+
+        int index = INT_MAX;
+
+        for(int i=0; i<m; i++){
+            int maxi = -1;
+            for(int j=0; j<n; j++){
+                maxi = max(maxi, mp[mat[i][j]]);
+            }
+            index = min(maxi,index);
+        }
+
+        for(int j=0; j<n; j++){
+            int maxi = -1;
+            for(int i=0; i<m; i++){
+                maxi = max(maxi, mp[mat[i][j]]);
+            }
+            index = min(maxi, index);
+        }
+
+        return index;
+    }
+};
