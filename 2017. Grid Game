@@ -1,0 +1,20 @@
+T.C : O(n)
+S.C : O(1)
+
+class Solution {
+public:
+    long long gridGame(vector<vector<int>>& grid) {
+        long long Row1_Sum = accumulate(grid[0].begin(),grid[0].end(),0LL);
+        long long Row2_Sum = 0;
+        long long minimized = LONG_LONG_MAX;
+
+        int n = grid[0].size();
+        for(int i=0; i<n; i++){
+            Row1_Sum -= grid[0][i];
+            minimized = min(minimized,max(Row2_Sum, Row1_Sum));
+            Row2_Sum += grid[1][i];
+        }
+
+        return minimized;
+    }
+};
