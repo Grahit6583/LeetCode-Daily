@@ -1,0 +1,43 @@
+class Solution {
+public:
+    vector<vector<int>> highestPeak(vector<vector<int>>& isWater) {
+        int m = isWater.size();
+        int n = isWater[0].size();
+
+        queue<pair<int,int>> q;
+        vector<vector<int>> ans(m, vector<int>(n, -1));
+
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(isWater[i][j] == 1){
+                    q.push({i,j});
+                    ans[i][j] = 0;
+                }
+            }
+        }
+
+        vector<vector<int>> directions = {{0,1},{0,-1},{1,0},{-1,0}};
+        while(!q.empty()){
+            int s = q.size();
+            while(s--){
+                pair<int,int> temp = q.front();
+                q.pop();
+                int i = temp.first;
+                int j = temp.second;
+                for(int k=0; k<4; k++){
+                    int x = i + directions[k][0];
+                    int y = j + directions[k][1];
+
+                    if(x >= 0 && x < m && y >= 0 && y < n && ans[x][y] == -1){
+                        ans[x][y] = ans[i][j] + 1;
+                        q.push({x,y});
+                    }
+                }
+            }
+        }
+
+        return ans;
+    }
+// T.C. -> O(m*n)
+// S.C. -> O(m*n)
+};
