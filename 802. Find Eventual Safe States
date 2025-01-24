@@ -1,0 +1,45 @@
+//T.C -> O(V + E)
+//S.C -> O(3N)
+class Solution {
+public:
+    bool dfs(vector<vector<int>>& graph, vector<int>& vis, int node,
+             vector<int>& check, vector<int>& path_vis) {
+        vis[node] = 1;
+        path_vis[node] = 1;
+        check[node] = 0;
+        for (auto it : graph[node]) {
+            if (!vis[it]) {
+                if (dfs(graph, vis, it, check, path_vis) == true) {
+                    check[node] = 0;
+                    return true;
+                }
+            } else if (path_vis[it]) {
+                check[node] = 0;
+                return true;
+            }
+        }
+
+        check[node] = 1;
+        path_vis[node] = 0;
+        return false;
+    }
+    vector<int> eventualSafeNodes(vector<vector<int>>& graph) {
+        int n = graph.size();
+        vector<int> vis(n, 0);
+        vector<int> safenodes;
+        vector<int> check(n, 0);
+        vector<int> path_vis(n, 0);
+        for (int i = 0; i < n; i++) {
+            if (!vis[i]) {
+                dfs(graph, vis, i, check, path_vis);
+            }
+        }
+
+        for (int i = 0; i < n; i++) {
+            if (check[i] == 1) {
+                safenodes.push_back(i);
+            }
+        }
+        return safenodes;
+    }
+};
