@@ -1,0 +1,68 @@
+//T.C -> O(n * (V + E))
+//S.C -> O(n + V)
+
+class Solution {
+public:
+    int bfs(int start, unordered_map<int, vector<int>>& adj, vector<bool>& visited) {
+        queue<pair<int, int>> que;
+        que.push({start, 0});
+        int maxDistance = 0;
+
+        while(!que.empty()) {
+            auto[currNode, dist] = que.front();
+            que.pop();
+
+            for(auto &ngbr : adj[currNode]) {
+                if(!visited[ngbr]) {
+                    visited[ngbr] = true;
+                    que.push({ngbr, dist+1});
+                    maxDistance = max(maxDistance, dist+1);
+                }
+            }
+        }
+
+        return maxDistance;
+    }
+    int maximumInvitations(vector<int>& favorite) {
+        int n = favorite.size();
+        unordered_map<int,vector<int>> adj;
+        for(int i=0; i<n; i++){
+            int u = i;
+            int v = favorite[i];
+            adj[v].push_back(u);
+        }
+
+        int longestCycle = 0;
+        int couple = 0;
+        vector<int> visited(n,false);
+        for(int i=0; i<n; i++){
+            if(!visited[i]){
+                unordered_map<int,int> mp;
+                int currnode = i;
+                int currcnt = 0;
+                while(!visited[currnode]){
+                    visited[currnode] = true;
+                    mp[currnode] = currcnt;
+
+                    int nxtnode = favorite[currnode];
+                    currcnt += 1;
+
+                    if(mp.count(nxtnode)){
+                        int cyclelen = currcnt - mp[nxtnode];
+                        longestCycle = max(longestCycle,cyclelen);
+
+                        if(cyclelen == 2){
+                            vector<bool> vis(n,false);
+                            vis[currnode] = true;
+                            vis[nxtnode] = true;
+                            couple += 2 + bfs(currnode,adj,vis) + bfs(nxtnode,adj,vis);
+                        }
+                        break;
+                    }
+                    currnode = nxtnode;
+                }
+            }
+        }
+        return max(couple,longestCycle);
+    }
+};
