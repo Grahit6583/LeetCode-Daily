@@ -1,0 +1,63 @@
+class Solution {
+public:
+    int dfs(vector<vector<int>> &grid, int i, int j, int id, int n){
+        if(i<0 || i>=n || j<0 || j>=n || grid[i][j] != 1){
+            return 0;
+        }
+
+        vector<vector<int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+        grid[i][j] = id;
+        int size = 1;
+        for(vector<int> &dir : directions){
+            int x = i + dir[0];
+            int y = j + dir[1];
+
+            size += dfs(grid,x,y,id,n);
+        }
+
+        return size;
+    }
+    int largestIsland(vector<vector<int>>& grid) {
+        int n = grid.size();
+
+        int maxi = 0;
+        int id = 2;
+        unordered_map<int,int> mp;
+        vector<vector<int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 1){
+                    int size = dfs(grid, i, j, id, n);
+                    maxi = max(maxi, size);
+                    mp[id] = size;
+                    id++;
+                }
+            }
+        }
+
+        for(int i=0; i<n; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 0){
+                    unordered_set<int> uniqueIds;
+                    for(auto &dir : directions){
+                        int x = i + dir[0];
+                        int y = j + dir[1];
+
+                        if(x >= 0 && x<n && y>=0 && y<n && grid[x][y] != 0){
+                            uniqueIds.insert(grid[x][y]);
+                        }
+                    }
+
+                    int overallSize = 1;
+                    for(auto &id : uniqueIds){
+                        overallSize += mp[id];
+                    }
+
+                    maxi = max(maxi, overallSize);
+                }
+            }
+        }
+
+        return maxi;
+    }
+};
