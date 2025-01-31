@@ -1,3 +1,5 @@
+//T.C -> O(n*n)
+//S.C -> O(n*n)
 class Solution {
 public:
     int dfs(vector<vector<int>> &grid, int i, int j, int id, int n){
