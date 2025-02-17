@@ -1,0 +1,28 @@
+class Solution {
+public:
+    void solve(vector<int> &vec, int &cnt){
+        cnt++;
+
+        for(int i=0; i<26; i++){
+            if(vec[i] == 0){
+                continue;
+            }
+
+            vec[i]--;
+            solve(vec, cnt);
+            vec[i]++;
+        }
+    }
+    int numTilePossibilities(string tiles) {
+        int cnt =0;
+
+        vector<int> vec(26,0);
+
+        for(char &ch : tiles){
+            vec[ch-'A']++;
+        }
+
+        solve(vec, cnt);
+        return cnt-1; 
+    }
+};
