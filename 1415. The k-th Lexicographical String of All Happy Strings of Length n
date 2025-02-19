@@ -1,0 +1,32 @@
+class Solution {
+public:
+    void solve(int n, int k, int &cnt, string &res, string curr){
+        if(curr.length() == n){
+            cnt++;
+            if(cnt == k){
+                res = curr;
+            }
+
+            return;
+        }
+
+        for(char ch = 'a'; ch <= 'c'; ch++){
+            if(!curr.empty() && curr.back() == ch){
+                continue;
+            }
+
+            curr.push_back(ch);
+            solve(n,k,cnt,res,curr);
+            curr.pop_back();
+        }
+    }
+    string getHappyString(int n, int k) {
+        string curr = "";
+        string res = "";
+        int cnt = 0;
+
+        solve(n,k,cnt,res,curr);
+
+        return res;
+    }
+};
