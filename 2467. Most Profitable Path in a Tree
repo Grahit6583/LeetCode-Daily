@@ -1,0 +1,67 @@
+class Solution {
+public:
+    bool Bob_dfs(int curr, int t, vector<bool> &vis, unordered_map<int,vector<int>> &adj, unordered_map<int,int> &mp){
+        vis[curr] = true;
+        mp[curr] = t;
+
+        if(curr == 0){
+            return true;
+        }
+
+        for(auto &nbr : adj[curr]){
+            if(!vis[nbr]){
+                if(Bob_dfs(nbr, t+1, vis, adj, mp)==true){
+                    return true;
+                }
+            }
+        }
+
+        mp.erase(curr);
+        return false;
+    }
+
+    void Alice_dfs(int curr, int t, int &AliceIncome, int income, vector<bool> &vis, vector<int> &amount, unordered_map<int,vector<int>> &adj, unordered_map<int,int> &mp)
+    {
+        vis[curr] = true;
+
+        if(mp.find(curr) == mp.end() || t < mp[curr]){
+            income += amount[curr];
+        }
+        else if(t == mp[curr]){
+            income += (amount[curr]/2);
+        }
+
+        if(adj[curr].size() == 1 && curr != 0){
+            AliceIncome = max(AliceIncome, income);
+        }
+
+        for(auto &nbr : adj[curr]){
+            if(!vis[nbr]){
+                Alice_dfs(nbr,t+1,AliceIncome, income, vis, amount, adj, mp);
+            }
+        }
+    }
+    int mostProfitablePath(vector<vector<int>>& edges, int bob, vector<int>& amount) {
+        int n = edges.size();
+
+        int AliceIncome = INT_MIN;
+        unordered_map<int,vector<int>> adj;
+        for(vector<int> edge : edges){
+            int u = edge[0];
+            int v = edge[1];
+
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        int time = 0;
+        vector<bool> vis(n,false);
+        unordered_map<int,int> mp;
+        Bob_dfs(bob,time,vis,adj,mp);
+        int income = 0;
+        vis.assign(n,false);
+        Alice_dfs(0,0,AliceIncome,income,vis,amount,adj,mp);
+
+        return AliceIncome;
+    }
+};
