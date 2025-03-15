@@ -1,0 +1,41 @@
+class Solution {
+public:
+    int solve(vector<int> &nums, int mid, int n){
+        int house = 0;
+        for(int i=0; i<n; i++){
+            if(nums[i] <= mid){
+                house++;
+                i++;
+            }
+        }
+
+        return house;
+    }
+    int minCapability(vector<int>& nums, int k) {
+        int n = nums.size();
+
+        int l = INT_MAX;
+        int r = INT_MIN;
+
+        for(int i=0; i<n; i++){
+            l = min(l,nums[i]);
+            r = max(r,nums[i]);
+        }
+
+        int ans = 0;
+        while(l<=r){
+            int mid = l + (r-l)/2;
+
+            int house = solve(nums,mid,n);
+            if(house >= k){
+                ans = mid;
+                r = mid-1;
+            }
+            else{
+                l = mid+1;
+            }
+        }
+
+        return ans;
+    }
+};
