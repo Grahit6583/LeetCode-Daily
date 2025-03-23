@@ -1,0 +1,49 @@
+class Solution {
+public:
+    typedef pair<long long, int> P;
+    int M = 1e9 + 7;
+    int countPaths(int n, vector<vector<int>>& roads) {
+        int m = roads.size();
+
+        unordered_map<int,vector<pair<int,int>>> adj;
+        for(int i=0; i<m; i++){
+            int u = roads[i][0];
+            int v = roads[i][1];
+            int time = roads[i][2];
+
+            adj[u].push_back({v,time});
+            adj[v].push_back({u,time});
+        }
+
+        priority_queue<P,vector<P>,greater<P>> pq;
+        vector<long long> dist(n, LLONG_MAX);
+        vector<int> path(n,0);
+
+        dist[0] = 0;
+        path[0] = 1;
+        pq.push({0,0});
+
+        while(!pq.empty()){
+            long long curr_time = pq.top().first;
+            int curr_node = pq.top().second;
+
+            pq.pop();
+            if (curr_time > dist[curr_node]) continue;
+            for(auto &vec : adj[curr_node]){
+                int ngbr = vec.first;
+                long long road_time = vec.second;
+
+                if(curr_time + road_time < dist[ngbr]){
+                    dist[ngbr] = curr_time + road_time;
+                    pq.push({dist[ngbr],ngbr});
+                    path[ngbr] = path[curr_node];
+                }
+                else if(curr_time + road_time == dist[ngbr]){
+                    path[ngbr] = (path[ngbr] + path[curr_node]) % M;
+                }
+            }
+        }
+
+        return path[n-1];
+    }
+};
