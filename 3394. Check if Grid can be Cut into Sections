@@ -1,0 +1,44 @@
+class Solution {
+public:
+    int merge_intervals(vector<vector<int>> &vec,int m){
+        int ans = 0;
+        vector<vector<int>> h;
+        h.push_back({vec[0][0],vec[0][1]});
+        for(int i=0; i<m; i++){
+            if(vec[i][0] < h.back()[1]){
+                h.back()[1] = max(h.back()[1],vec[i][1]);
+            }
+            else{
+                h.push_back(vec[i]);
+            }
+        }
+
+        return h.size();
+    }
+    bool checkValidCuts(int n, vector<vector<int>>& rectangles) {
+        int m = rectangles.size();
+
+        vector<vector<int>> hor(m,vector<int>(2));
+        vector<vector<int>> ver(m,vector<int>(2));
+
+        for(int i=0; i<m; i++){
+            hor[i][0] = rectangles[i][0];
+            hor[i][1] = rectangles[i][2];
+            ver[i][0] = rectangles[i][1];
+            ver[i][1] = rectangles[i][3];
+        }
+
+        sort(hor.begin(),hor.end());
+        if(merge_intervals(hor,m) >= 3)
+        {
+            return true;
+        }
+        
+        sort(ver.begin(),ver.end());
+        if(merge_intervals(ver,m) >= 3){
+            return true;
+        }
+
+        return false;
+    }
+};
