@@ -1,0 +1,53 @@
+class Solution {
+    bool CheckCycle(int i, vector<int> &vis, vector<int> &pathVis, vector<vector<int>> &adj, vector<int> &ans){
+        vis[i] = 1;
+        pathVis[i] = 1;
+
+        for(auto it : adj[i]){
+            if(!vis[it]){
+                if(CheckCycle(it,vis,pathVis,adj,ans)){
+                    return true;
+                }
+            }
+            else if(pathVis[it]){
+                return true;
+            }
+        }
+        ans.push_back(i);
+        pathVis[i] = 0;
+        return false;
+    }
+public:
+    vector<int> findOrder(int numCourses, vector<vector<int>>& pre) {
+        int n = pre.size();
+        vector<int> ans;
+        if(n==0){
+            for(int i=0; i<numCourses; i++){
+                ans.push_back(i);
+            }
+
+            return ans;
+        }
+
+        vector<vector<int>> adj(numCourses);
+        for(int i=0; i<n; i++){
+            int u = pre[i][0];
+            int v = pre[i][1];
+
+            adj[u].push_back(v);
+        }
+
+        vector<int> vis(numCourses,0);
+        vector<int> pathVis(numCourses,0);
+
+        for(int i=0; i<numCourses; i++){
+            if(!vis[i]){
+                if(CheckCycle(i,vis,pathVis,adj,ans)){
+                    return {};
+                }
+            }
+        }
+
+        return ans;
+    }
+};
