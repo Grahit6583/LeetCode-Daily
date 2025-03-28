@@ -1,0 +1,48 @@
+class Solution {
+public:
+    vector<int> maxPoints(vector<vector<int>>& grid, vector<int>& q) {
+        int m  = grid.size();
+        int n = grid[0].size();
+        int Q = q.size();
+
+        vector<int> res(Q,0);
+        vector<pair<int,int>> SortedQ;
+        for(int i=0; i<Q; i++){
+            SortedQ.push_back({q[i],i});
+        }
+
+        sort(SortedQ.begin(),SortedQ.end());
+
+        priority_queue<vector<int> , vector<vector<int>>, greater<>> pq;
+        vector<vector<int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+        vector<vector<bool>> vis(m,vector<bool>(n,false));
+
+        int points = 0;
+        vis[0][0] = true;
+        pq.push({grid[0][0],0,0});
+
+        for(int i=0; i<Q; i++){
+            int query = SortedQ[i].first;
+            int idx = SortedQ[i].second;
+            while(!pq.empty() && pq.top()[0] < query){
+                int i = pq.top()[1];
+                int j = pq.top()[2];
+                pq.pop();
+                points++;
+                for(auto &dir : directions){
+                    int i_ = i + dir[0];
+                    int j_ = j + dir[1];
+
+                    if(i_ < m && i_ >= 0 && j_ < n && j_ >= 0 && !vis[i_][j_]){
+                        pq.push({grid[i_][j_],i_,j_});
+                        vis[i_][j_] = true;
+                    }
+                }
+            }
+
+            res[idx] = points;
+        }
+
+        return res;
+    }
+};
