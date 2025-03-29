@@ -1,0 +1,17 @@
+class Solution {
+    const int MOD = 1e9 + 7;
+    long long fast_power(long long a, long long b){
+        long long ans = 1;
+        while(b){
+            if(b&1) ans = (ans*a)%MOD;
+            a = (a*a)%MOD;
+            b /= 2;
+        }
+
+        return ans;
+    }
+public:
+    int stringCount(int n) {
+        return (fast_power(26,n) - ((fast_power(25,n-1) * (75+n))%MOD - (fast_power(24,n-1) * (72 + (2*n)))%MOD + (fast_power(23,n-1) * (23 + n))%MOD + MOD)%MOD + MOD)%MOD;
+    }
+};
