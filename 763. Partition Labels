@@ -1,0 +1,84 @@
+// Approach - 1
+class characters{
+    public:
+        int first;
+        int last;
+        char ch;
+        characters(char c, int index){
+            first = index;
+            last = index;
+            ch = c;
+        }
+};
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        int n = s.size();
+        vector<characters> arr;
+
+        for (int i = 0; i < s.length(); i++) {
+            char c = s[i];
+            bool found = false;
+
+            for (auto& obj : arr) {
+                if (obj.ch == c) {
+                    obj.last = i;  
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                arr.push_back(characters(c, i));
+            }
+        }
+
+        sort(arr.begin(), arr.end(), [](const characters& a, const characters& b) {
+            return a.first < b.first;
+        });
+
+        int l = arr.size();
+        vector<int> ans;
+        int start = arr[0].first;
+        int end = arr[0].last;
+        for(int i=1; i<l; i++){
+            if(arr[i].first <= end){
+                end = max(arr[i].last,end);
+            }
+            else{
+                ans.push_back(end-start+1);
+                start = arr[i].first;
+                end = arr[i].last;
+            }
+        }
+        ans.push_back(end - start + 1);
+
+        return ans;
+    }
+};
+
+//Approach - 2
+class Solution {
+public:
+    vector<int> partitionLabels(string s) {
+        int n = s.size();
+        vector<int> hash(26,-1);
+
+        for(int i=0; i<n; i++){
+            hash[s[i]-'a'] = i;
+        }
+
+        int end = 0;
+        int temp = 0;
+        vector<int> ans;
+        for(int i=0; i<n; i++){
+            end = max(end,hash[s[i]-'a']);
+            if(end == i){
+                ans.push_back(i-temp+1);
+                temp = i+1;
+            }
+        }
+
+        return ans;
+    }
+};
