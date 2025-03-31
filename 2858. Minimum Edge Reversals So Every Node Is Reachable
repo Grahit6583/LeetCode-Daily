@@ -1,0 +1,44 @@
+class Solution {
+    void bfs(int node, int parent, vector<int> &depth, vector<bool> &vis, vector<int> &edgeRev, int d, int &ersn, unordered_map<int, vector<pair<int,int>>> &adj){
+        vis[node] = true;
+        depth[node] = d;
+
+        for(auto it : adj[node]){
+            if(!vis[it.first]){
+                edgeRev[it.first] = edgeRev[node] + it.second;
+                ersn += it.second;
+                bfs(it.first,node,depth,vis,edgeRev,d+1,ersn,adj);
+            }
+        }
+    }
+public:
+    vector<int> minEdgeReversals(int n, vector<vector<int>>& edges) {
+        int m = edges.size();
+
+        unordered_map<int, vector<pair<int,int>>> adj;
+        for(int i=0; i<m; i++){
+            int u = edges[i][0];
+            int v = edges[i][1];
+
+            adj[u].push_back({v,0});
+            adj[v].push_back({u,1});
+        }
+
+        int ersn = 0;
+        vector<int> depth(n,0);
+        vector<bool> vis(n,false);
+        vector<int> edgeRev(n,0);
+
+        bfs(0,-1,depth,vis,edgeRev,0,ersn,adj);
+
+        vector<int> ans(n,0);
+        ans[0] = ersn;
+        for(int i=1; i<n; i++){
+            int val = depth[i] - edgeRev[i];
+            int val2 = ersn - edgeRev[i];
+            ans[i] = val + val2;
+        }
+
+        return ans;
+    }
+};
