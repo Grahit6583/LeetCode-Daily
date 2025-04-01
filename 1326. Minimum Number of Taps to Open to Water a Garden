@@ -1,0 +1,29 @@
+class Solution {
+public:
+    int minTaps(int n, vector<int>& ranges) {
+        vector<int> intervals(n+1,0);
+
+        for(int i=0; i<n+1; i++){
+            int start = max(0,i-ranges[i]);
+            int end = min(n,i+ranges[i]);
+
+            intervals[start] = max(end, intervals[start]);
+        }
+
+        int cnt = 0;
+        int start = 0;
+        int end = 0;
+
+        for(int i=0; i<=n; i++){
+            if(i > end){
+                return -1;
+            }
+            if(i > start){
+                cnt++;
+                start = end;
+            }
+            end = max(end,intervals[i]);
+        }
+        return cnt;
+    }
+};
