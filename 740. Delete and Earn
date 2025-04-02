@@ -1,0 +1,95 @@
+//Memoization
+class Solution {
+    int solve(int i, int maxi, vector<int> &hash, vector<int> &dp){
+        if(i > maxi){
+            return 0;
+        }
+
+        if(dp[i] != -1){
+            return dp[i];
+        }
+
+        int pick = (hash[i]*i) + solve(i+2,maxi,hash,dp);
+        int not_pick = solve(i+1,maxi,hash,dp);
+
+        return dp[i] = max(pick, not_pick);
+    }
+public:
+    int deleteAndEarn(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = 0;
+        for(int i=0; i<n; i++){
+            if(maxi < nums[i]){
+                maxi = nums[i];
+            }
+        }
+        vector<int> hash(maxi+1,0);
+        for(int i=0; i<n; i++){
+            hash[nums[i]]++;
+        }
+        vector<int> dp(maxi+1,-1);
+        return solve(0,maxi,hash,dp);
+    }
+};
+
+//Tabulation
+class Solution {
+public:
+    int deleteAndEarn(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = 0;
+        for(int i=0; i<n; i++){
+            if(maxi < nums[i]){
+                maxi = nums[i];
+            }
+        }
+        vector<int> hash(maxi+1,0);
+        for(int i=0; i<n; i++){
+            hash[nums[i]]++;
+        }
+        vector<int> dp(maxi+3,0);
+
+        for(int i=maxi; i>=1; i--){
+            int pick = (hash[i]*i) + dp[i+2];
+            int not_pick = dp[i+1];
+
+            dp[i] = max(pick, not_pick);
+        }
+
+        return dp[1];
+    }
+};
+
+
+//Space Optimization
+class Solution {
+public:
+    int deleteAndEarn(vector<int>& nums) {
+        int n = nums.size();
+        int maxi = 0;
+        for(int i=0; i<n; i++){
+            if(maxi < nums[i]){
+                maxi = nums[i];
+            }
+        }
+        vector<int> hash(maxi+1,0);
+        for(int i=0; i<n; i++){
+            hash[nums[i]]++;
+        }
+        
+        int prev = 0;
+        int next = 0;
+
+        for(int i=maxi; i>=1; i--){
+            int pick = (hash[i]*i) + prev;
+            int not_pick = next;
+
+            int curr = max(pick, not_pick);
+
+            prev = next;
+            next = curr;
+        }
+
+        return next;
+    }
+};
