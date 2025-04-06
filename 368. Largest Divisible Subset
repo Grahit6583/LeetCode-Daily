@@ -1,0 +1,70 @@
+//Recurrsion
+class Solution {
+    void solve(int i, int prev, vector<int> &nums, vector<int> &res, vector<int> &take, int n){
+        if(i >= n){
+            if(take.size() > res.size()){
+                res = take;
+            }
+
+            return ;
+        }
+
+        if(prev == -1 || nums[i] % prev == 0){
+            take.push_back(nums[i]);
+            solve(i+1,nums[i],nums,res,take,n);
+            take.pop_back();
+        }
+
+        solve(i+1, prev, nums,res,take,n);
+    }
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size();
+
+        vector<int> res;
+        vector<int> take;
+
+        solve(0,-1,nums,res,take,n);
+
+        return res;
+    }
+};
+
+//Tabulation
+class Solution {
+public:
+    vector<int> largestDivisibleSubset(vector<int>& nums) {
+        int n = nums.size();
+        sort(nums.begin(),nums.end());
+        vector<int> dp(n,1);
+        vector<int> prev(n,-1);
+
+        int maxi = 1;
+        int last_index = 0;
+
+        for(int i=1; i<n; i++){
+            for(int j=0; j<i; j++){
+                if(nums[i] % nums[j] == 0){
+                    if(dp[i] < dp[j]+1){
+                        dp[i] = dp[j] + 1;
+                        prev[i] = j;
+                    }
+
+                    if(dp[i] > maxi){
+                        maxi = dp[i];
+                        last_index = i;
+                    }
+                }
+            }
+        }
+
+        vector<int> res;
+
+        while(last_index != -1){
+            res.push_back(nums[last_index]);
+            last_index = prev[last_index];
+        }
+
+        return res;
+    }
+};
