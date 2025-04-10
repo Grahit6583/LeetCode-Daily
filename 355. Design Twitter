@@ -1,0 +1,43 @@
+class Twitter {
+public:
+    map<int,set<int>> user_following;
+    int curr;
+    vector<vector<int>> timeline;
+    Twitter() {
+        user_following.clear();
+        curr=0;
+    }
+    
+    void postTweet(int userId, int tweetId) {
+        timeline.push_back({curr++, tweetId, userId});
+    }
+    
+    vector<int> getNewsFeed(int userId) {
+        vector<int> ans;
+        int n=timeline.size();
+        for(int i=n-1; i>=0 && ans.size()<10; i--){
+            if(timeline[i][2] == userId || user_following[userId].count(timeline[i][2])){
+                ans.push_back(timeline[i][1]);
+            }
+        }
+
+        return ans;
+    }
+    
+    void follow(int followerId, int followeeId) {
+        user_following[followerId].insert(followeeId);
+    }
+    
+    void unfollow(int followerId, int followeeId) {
+        user_following[followerId].erase(followeeId);
+    }
+};
+
+/**
+ * Your Twitter object will be instantiated and called as such:
+ * Twitter* obj = new Twitter();
+ * obj->postTweet(userId,tweetId);
+ * vector<int> param_2 = obj->getNewsFeed(userId);
+ * obj->follow(followerId,followeeId);
+ * obj->unfollow(followerId,followeeId);
+ */
