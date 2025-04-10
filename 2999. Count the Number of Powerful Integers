@@ -1,0 +1,37 @@
+class Solution {
+public:
+    long long solve(string &str, string &inputSuffix, int limit){
+        if(str.length() < inputSuffix.length()){
+            return 0;
+        }
+
+        string trailing_Str = str.substr(str.length()-inputSuffix.length());
+
+        long long cnt = 0;
+        int rem_len = str.length()-inputSuffix.length();
+        
+        for(int i=0; i<rem_len; i++){
+            int digit = str[i] - '0';
+
+            if(digit <= limit){
+                cnt += digit * pow(limit+1, rem_len-i-1);
+            }
+            else{
+                cnt += pow(limit+1, rem_len-i);
+                return cnt;
+            }
+        }
+
+        if(trailing_Str >= inputSuffix){
+            cnt += 1;
+        }
+
+        return cnt;
+    }
+    long long numberOfPowerfulInt(long long start, long long finish, int limit, string s) {
+        string str1 = to_string(start-1);
+        string str2 = to_string(finish);
+
+        return solve(str2,s,limit)-solve(str1,s,limit);
+    }
+};
