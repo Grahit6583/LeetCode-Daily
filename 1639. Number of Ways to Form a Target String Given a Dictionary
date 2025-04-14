@@ -1,0 +1,29 @@
+class Solution {
+public:
+    const int MOD = 1e9+7;
+    int numWays(vector<string>& words, string target) {
+        int m = words.size();
+        int n = words[0].length();
+        int k = target.length();
+        vector<vector<long long>> hash(26,vector<long long>(n,0));
+
+        for(int j=0; j<n; j++){
+            for(int i=0; i<m; i++){
+                hash[words[i][j]-'a'][j]++;
+            }
+        } 
+
+        vector<long long> dp(k+1, 0);
+        dp[0] = 1;
+        
+        // Process each column and update the DP table in reverse order.
+        for (int j = 0; j < n; j++) {
+            // Update dp backwards to prevent using the same column multiple times.
+            for (int i = k; i > 0; i--) {
+                dp[i] = (dp[i] + dp[i-1] * hash[target[i-1] - 'a'][j]) % MOD;
+            }
+        }
+        
+        return dp[k];
+    }
+};
