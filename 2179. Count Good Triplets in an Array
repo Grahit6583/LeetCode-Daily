@@ -1,0 +1,62 @@
+class Solution {
+    using ll = long long;
+    vector<ll> seg_tree;
+
+    void update_tree(ll start_idx, ll start, ll end, ll &query){
+        if(end < query || start > query){
+            return ;
+        }
+
+        if(end == start){
+            seg_tree[start_idx]++;
+            return;
+        }
+
+        ll mid = start + (end-start)/2;
+        update_tree(2*start_idx,start,mid,query);
+        update_tree(2*start_idx + 1, mid+1, end, query);
+        seg_tree[start_idx] = seg_tree[2*start_idx] + seg_tree[2*start_idx+1];
+    }
+
+    int range_query_sum(ll start_idx, ll start, ll end, ll qs, ll qe){
+        if(qs>end || qe<start){
+            return 0;
+        }
+
+        if(start >= qs && end <= qe){
+            return seg_tree[start_idx];
+        }
+
+        ll mid = start + (end-start)/2;
+        ll left_sum = range_query_sum(2*start_idx,start,mid,qs,qe);
+        ll right_sum = range_query_sum(2*start_idx+1, mid+1, end, qs, qe);
+
+        return left_sum + right_sum;
+    }
+public:
+    long long goodTriplets(vector<int>& nums1, vector<int>& nums2) {
+        ll n = nums1.size();
+
+        seg_tree = vector<ll>(4*n+1, 0);
+
+        unordered_map<ll,ll> nums2_idx;
+        for(int i=0; i<n; i++){
+            nums2_idx[nums2[i]] = i;
+        }
+
+        update_tree(1,0,n-1,nums2_idx[nums1[0]]);
+        ll cnt = 0;
+        for(int i=1; i<n-1; i++){
+            ll nums2idx = nums2_idx[nums1[i]];
+
+            ll common_left_ele = range_query_sum(1,0,n-1,0,nums2idx);
+            ll uncommon_left_ele = i-common_left_ele;
+            ll common_right = (n-nums2idx-1) - uncommon_left_ele;
+            cnt += common_right * common_left_ele;
+
+            update_tree(1,0,n-1,nums2idx);
+        }
+
+        return cnt;
+    }
+};
