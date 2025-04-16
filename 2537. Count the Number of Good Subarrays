@@ -1,0 +1,27 @@
+class Solution {
+public:
+    long long countGood(vector<int>& nums, int k) {
+        int n = nums.size();
+
+        int i=0;
+        int j=0;
+
+        map<int,int> hash;
+        long long res = 0;
+        long long pairs=0;
+
+        while(j<n){
+            pairs += hash[nums[j]];
+            hash[nums[j]]++;
+            while(pairs >= k){
+                res += (n-j);
+                hash[nums[i]]--;
+                pairs -= hash[nums[i]];
+                i++;
+            }
+
+            j++;
+        }
+        return res;
+    }
+};
