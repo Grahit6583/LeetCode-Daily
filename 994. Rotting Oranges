@@ -1,0 +1,57 @@
+class cell{
+    public:
+        int row;
+        int col;
+        int time;
+};
+class Solution {
+public:
+    int orangesRotting(vector<vector<int>>& grid) {
+        int m = grid.size();
+        int n = grid[0].size();
+
+        queue<cell> q;
+        int cnt_fresh = 0;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(grid[i][j] == 2){
+                    q.push({i,j,0});
+                }
+
+                if(grid[i][j] == 1){
+                    cnt_fresh++;
+                }
+            }
+        }
+
+        int cnt=0;
+        int time=0;
+        vector<int> del_row = {-1,0,1,0};
+        vector<int> del_col = {0,-1,0,1};
+
+        while(!q.empty()){
+            int r = q.front().row;
+            int c = q.front().col;
+            int t = q.front().time;
+
+            q.pop();
+            time = max(time,t);
+            for(int i=0; i<4; i++){
+                int nrow = r + del_row[i];
+                int ncol = c + del_col[i];
+
+                if(nrow >= 0 && nrow<m && ncol >= 0 && ncol < n && grid[nrow][ncol] == 1){
+                    q.push({nrow,ncol,t+1});
+                    grid[nrow][ncol] = 2;
+                    cnt++;
+                }
+            }
+        }
+
+        if(cnt != cnt_fresh){
+            return -1;
+        }
+
+        return time;
+    }
+};
