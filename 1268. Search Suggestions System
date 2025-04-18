@@ -1,0 +1,98 @@
+// Using Trie
+
+class Trienode{
+    public:
+    Trienode *children[26];
+    bool endOfword;
+
+    Trienode(){
+        for(int i=0; i<26; i++){
+            children[i] = NULL;
+        }
+        endOfword = false;
+    }
+};
+class Solution {
+public:
+    void insert_word(Trienode *trie, string &word){
+        for(char &c : word){
+            int index = c-'a';
+            if(!trie->children[index]){
+                trie->children[index] = new Trienode;
+            }
+            trie = trie->children[index];
+        }
+        trie->endOfword = true;
+    }
+
+    vector<string> search_word(Trienode *trie, string &pre){
+        vector<string> res;
+        for(char ch : pre){
+            int index = ch - 'a';
+            if(!trie->children[index]){
+                return {};
+            }
+            trie = trie->children[index];
+        }
+        dfs(trie,pre,res);
+        return res;
+    }
+    void dfs(Trienode *trie, string pre, vector<string> &res){
+        if(res.size() == 3){
+            return;
+        }
+
+        if(trie->endOfword){
+            res.push_back(pre);
+        }
+
+        for(int i=0; i<26; i++){
+            if(trie->children[i]){
+                dfs(trie->children[i],pre+(char)(i+'a'),res);
+            }
+        }
+    }
+
+
+    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
+        Trienode *trie = new Trienode;
+        for(string &prod : products){
+            insert_word(trie,prod);
+        }
+        vector<vector<string>> res;
+        string prefix;
+        for(char &ch : searchWord){
+            prefix += ch;
+            res.push_back(search_word(trie,prefix));
+        }
+
+        return res;
+    }
+};
+
+// Using Binary Search
+
+class Solution {
+public:
+    vector<vector<string>> suggestedProducts(vector<string>& products, string searchWord) {
+        vector<vector<string>> res;
+        int n = products.size();
+        int start = 0;
+        int bStart = 0;
+        string prefix;
+
+        sort(products.begin(),products.end());
+
+        for(char &ch : searchWord){
+            prefix += ch;
+            start = lower_bound(products.begin()+bStart, products.end(),prefix) - products.begin();
+            res.push_back({});
+            for(int i=start; i<min(start+3,n) && !products[i].compare(0,prefix.length(),prefix); i++){
+                res.back().push_back(products[i]);
+            }
+            bStart = start;
+        }
+
+        return res;
+    }
+};
