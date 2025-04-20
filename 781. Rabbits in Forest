@@ -1,0 +1,24 @@
+class Solution {
+public:
+    int numRabbits(vector<int>& answers) {
+        int n = answers.size();
+        vector<int> hash(1001,0);
+
+        for(int i=0; i<n; i++){
+            hash[answers[i]]++;
+        }
+
+        int total = 0;
+        for(int i=0; i<1001; i++){
+            int cnt = hash[i];
+            int x = i;
+
+            int grpSize = (x+1);
+            int grp = ceil((double)cnt/grpSize);
+
+            total += grp * (grpSize);
+        }
+
+        return total;
+    }
+};
