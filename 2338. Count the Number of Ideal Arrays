@@ -1,0 +1,46 @@
+#define ll long long
+class Solution {
+public:
+    int MOD = 1e9+7;
+    void CountSequences(int curr, int idx, int &maxValue, vector<vector<ll>> &count, vector<vector<ll>> &prefix, vector<ll> &options){
+        options[idx] += 1;
+        for(int j=2; curr*j <= maxValue; j++){
+            CountSequences(curr*j,idx+1,maxValue,count,prefix,options);
+        }
+    }
+    int idealArrays(int n, int maxValue) {
+        vector<vector<ll>> count(15,vector<ll>(n+1,0));
+        vector<vector<ll>> prefix(15,vector<ll>(n+1,0));
+        vector<ll> options(15);
+
+        for(int i=1; i<=n; i++){
+            count[1][i] = 1;
+            prefix[1][i] = i;
+        }
+
+        for(int i=2; i<=14; i++){
+            for(int j=i; j<=n; j++){
+                count[i][j] = prefix[i-1][j-1];
+                prefix[i][j] = count[i][j] + prefix[i][j-1];
+                count[i][j] %= MOD;
+                prefix[i][j] %= MOD;
+            }
+        }
+
+        for(int i=1; i<=maxValue; i++){
+            CountSequences(i,1,maxValue,count,prefix,options);
+        }
+
+        ll ans=0;
+        ll ways=0;
+
+        for(int i=1; i<=14; i++){
+            ways = count[i][n] * options[i];
+            ways  %= MOD;
+            ans += ways;
+            ans %= MOD;
+        }
+
+        return ans;
+    }
+};
