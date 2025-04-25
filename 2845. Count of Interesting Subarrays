@@ -1,0 +1,28 @@
+class Solution {
+    #define ll long long
+public:
+    long long countInterestingSubarrays(vector<int>& nums, int modulo, int k) {
+        ll prefix_sum = 0;
+        ll pos = 0;
+        ll interesting_subarrays = 0;
+        ll n = nums.size();
+        unordered_map<ll,ll>mp;
+        mp[0] = 1;
+        while(pos < n){
+            if(nums[pos]%modulo == k){
+                prefix_sum++;
+            }
+
+            prefix_sum %= modulo;
+
+            if(mp.count((prefix_sum-k + modulo)%modulo)){
+                interesting_subarrays += mp[(prefix_sum-k + modulo)%modulo];
+            }
+
+            mp[prefix_sum]++;
+            pos++;
+        }
+
+        return interesting_subarrays;
+    }
+};
