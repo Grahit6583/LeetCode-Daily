@@ -1,0 +1,43 @@
+class Solution {
+    public int minDominoRotations(int[] tops, int[] bottoms) {
+        int n = tops.length;
+        HashMap<Integer,Integer> mp = new HashMap<>();
+
+        for(int i=0; i<n; i++){
+            mp.put(tops[i],mp.getOrDefault(tops[i],0)+1);
+            mp.put(bottoms[i],mp.getOrDefault(bottoms[i],0)+1);
+        }
+
+        int ele = -1;
+        for(Map.Entry<Integer,Integer> entry : mp.entrySet() ){
+            if(entry.getValue() >= n){
+                ele = entry.getKey();
+                break;
+            }
+        }
+        if(ele == -1){
+            return ele;
+        }
+
+        int top = 0;
+        int bottom = 0; 
+        int extra = 0;
+        for(int i=0; i<n; i++){
+            if(tops[i] == ele && bottoms[i] != ele){
+                top++;
+            }
+            
+            if(bottoms[i] == ele && tops[i] != ele){
+                bottom++;
+            }
+
+            if(bottoms[i] == ele && tops[i] == ele){
+                extra++;
+            }
+        }
+        if(top+bottom+extra >= n){
+            return Math.min(top,bottom);
+        }
+        return -1;
+    }
+}
