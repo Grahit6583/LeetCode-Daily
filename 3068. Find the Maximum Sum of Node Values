@@ -1,0 +1,27 @@
+class Solution {
+public:
+    long long maximumValueSum(vector<int>& nums, int k, vector<vector<int>>& edges) {
+        long long sum = 0;
+        long long min_lose = INT_MAX;
+        long long cnt = 0;
+
+        int n = nums.size();
+        for(int i=0; i<n; i++){
+            if((nums[i] ^ k) > nums[i]){
+                cnt++;
+                sum += (nums[i] ^ k);
+            }
+            else{
+                sum += nums[i];
+            }
+
+            min_lose = min(min_lose,(long long)abs(nums[i]-(nums[i]^k)));
+        }
+
+        if(cnt % 2 == 0){
+            return sum;
+        }
+
+        return sum - min_lose;
+    }
+};
