@@ -1,0 +1,93 @@
+// using DFS
+
+class Solution {
+public:
+    int dfs(int box, vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, unordered_set<int>& visited, unordered_set<int>& foundBoxes){
+        if(visited.count(box)){
+            return 0;
+        }
+
+        if(status[box] == 0){
+            foundBoxes.insert(box);
+            return 0;
+        }
+
+        visited.insert(box);
+        int candiesCollected = candies[box];
+
+        for(int &insideBox : containedBoxes[box]){
+            candiesCollected += dfs(insideBox, status, candies, keys, containedBoxes, visited, foundBoxes);
+        }
+
+        for(int &boxKey : keys[box]){
+            status[boxKey] = 1;
+            if(foundBoxes.count(boxKey)){
+                candiesCollected += dfs(boxKey, status, candies, keys, containedBoxes, visited, foundBoxes);
+            }
+        }
+
+        return candiesCollected;
+    }
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        int candiesCollected = 0;
+        unordered_set<int> visited;
+        unordered_set<int> foundBoxes;
+
+        for(int &box : initialBoxes) {
+            candiesCollected += dfs(box, status, candies, keys, containedBoxes, visited, foundBoxes);
+        }
+
+        return candiesCollected;
+    }
+};
+
+// BFS
+// T.C = O(N+E)
+// S.C = O(N)
+
+class Solution {
+public:
+    int maxCandies(vector<int>& status, vector<int>& candies, vector<vector<int>>& keys, vector<vector<int>>& containedBoxes, vector<int>& initialBoxes) {
+        int n = status.size();
+
+        queue<int> q;
+        vector<bool> visited(n,false);
+        vector<bool> available(n,false);
+
+        for(int box : initialBoxes){
+            available[box] = true;
+            if(status[box] == 1){
+                q.push(box);
+                visited[box] = true;
+            }
+        }
+
+        int candy = 0;
+
+        while(!q.empty()){
+            int box = q.front();
+            q.pop();
+
+            candy += candies[box];
+            for(int key : keys[box]){
+                if(status[key] == 0){
+                    status[key] = 1;
+                    if(available[key] && !visited[key]){
+                        q.push(key);
+                        visited[key] = true;
+                    }
+                }
+            }
+
+            for(int innerBox : containedBoxes[box]){
+                available[innerBox] = true;
+                if (status[innerBox] == 1 && !visited[innerBox]) {
+                    q.push(innerBox);
+                    visited[innerBox] = true;
+                }
+            }
+        }
+
+        return candy;
+    }
+};
