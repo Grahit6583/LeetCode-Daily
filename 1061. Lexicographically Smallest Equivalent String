@@ -1,0 +1,35 @@
+class Solution {
+public:
+    char dfs(char ch, unordered_map<char,vector<char>> &adj, vector<bool> &vis){
+        vis[ch-'a'] = true;
+        char Char = ch;
+        for(char v : adj[ch]){
+            if(!vis[v-'a']){
+                Char = min(Char, dfs(v,adj,vis));
+            }
+        }
+
+        return Char;
+    }
+    string smallestEquivalentString(string s1, string s2, string baseStr) {
+        int n = s1.length();
+        int m = baseStr.length();
+        unordered_map<char,vector<char>> adj;
+        for(int i=0; i<n; i++){
+            char u = s1[i];
+            char v = s2[i];
+
+            adj[u].push_back(v);
+            adj[v].push_back(u);
+        }
+
+        string minchar;
+        for(int i=0; i<m; i++){
+            vector<bool> vis(26,false);
+            char ch = dfs(baseStr[i],adj,vis);
+            minchar += ch;
+        }
+
+        return minchar;
+    }
+};
