@@ -1,0 +1,43 @@
+class Solution {
+public:
+    string robotWithString(string s) {
+        int n = s.length();
+        vector<int> freq(26, 0); // Frequency of characters
+        stack<char> st;
+
+        // Count frequencies
+        for (char ch : s) {
+            freq[ch - 'a']++;
+        }
+
+        string res;
+        res.reserve(n); // Avoid dynamic reallocations
+
+        int minCharIndex = 0; // Pointer to track smallest remaining character
+
+        for (int i = 0; i < n; i++) {
+            // Update minCharIndex if current char frequency is 0
+            while (minCharIndex < 26 && freq[minCharIndex] == 0) {
+                minCharIndex++;
+            }
+
+            char mini = 'a' + minCharIndex;
+
+            // Pop from stack while top <= smallest remaining char
+            while (!st.empty() && st.top() <= mini) {
+                res.push_back(st.top());
+                st.pop();
+            }
+
+            st.push(s[i]);
+            freq[s[i] - 'a']--;
+        }
+
+        // Pop remaining characters from the stack
+        while (!st.empty()) {
+            res.push_back(st.top());
+            st.pop();
+        }
+        return res;
+    }
+};
