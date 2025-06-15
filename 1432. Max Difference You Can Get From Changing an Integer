@@ -1,0 +1,42 @@
+class Solution {
+public:
+    int maxDiff(int num) {
+        string s = to_string(num);
+        int n = s.length();
+        string mini = s;
+        string maxi = "";
+        char ch_maxi = s[0];
+        if(ch_maxi == '9'){
+            for(int i=1; i<n; i++){
+                if(s[i] != '9'){
+                    ch_maxi = s[i];
+                    break;
+                }
+            }
+        }
+        for(int i=0; i<n; i++){
+            char ch = mini[i];
+            if(i==0){
+                if(ch != '1'){
+                    replace(mini.begin(),mini.end(),ch,'1');
+                    break;
+                }
+            }
+            else if(ch != '0' && ch != mini[0]){
+                replace(mini.begin(),mini.end(),ch,'0');
+                break;
+            }
+        }
+        for(int i=0; i<n; i++){
+            if(s[i] == ch_maxi){
+                maxi += '9';
+            }
+            else{
+                maxi += s[i];
+            }
+        }
+        int num1 = stoi(mini);
+        int num2 = stoi(maxi);
+        return num2-num1;
+    }
+};
