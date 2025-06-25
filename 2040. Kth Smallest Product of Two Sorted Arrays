@@ -1,0 +1,51 @@
+class Solution {
+public:
+    long long f(vector<int>& nums2, long long t, long long k) {
+        int n2 = nums2.size();
+        int left = 0;
+        int right = n2 - 1;
+
+        while (left <= right) {
+            int mid = left + (right - left) / 2;
+
+            if ((t >= 0 && nums2[mid] * t <= k) ||
+                (t < 0 && nums2[mid] * t > k)) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        if (t >= 0) {
+            return left;
+        } else {
+            return n2 - left;
+        }
+    }
+
+    long long kthSmallestProduct(vector<int>& nums1, vector<int>& nums2,
+                                 long long k) {
+        int n1 = nums1.size();
+        int n2 = nums2.size();
+
+        long long left = -1e10;
+        long long right = 1e10;
+
+        while (left <= right) {
+            long long cnt = 0;
+            long long mid = left + (right - left) / 2;
+
+            for (int i = 0; i < n1; i++) {
+                cnt += f(nums2, nums1[i], mid);
+            }
+
+            if (cnt < k) {
+                left = mid + 1;
+            } else {
+                right = mid - 1;
+            }
+        }
+
+        return left;
+    }
+};
