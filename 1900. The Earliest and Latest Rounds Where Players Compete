@@ -1,0 +1,57 @@
+class Solution {
+public:
+    vector<int> earliestAndLatest(int n, int firstPlayer, int secondPlayer) {
+        int left = firstPlayer;
+        int right = secondPlayer;
+
+        if(left == n-right+1){
+            return {1,1};
+        }
+
+        if(left > n-right+1){
+            int t = n-left+1;
+            left = n-right+1;
+            right = t;
+        }
+
+        int minRound = n;
+        int maxRound = 1;
+        int nextRound = (n+1)/2;
+
+        if(right <= nextRound){
+            int midCnt = right-left-1;
+            int leftCnt = left-1;
+            for(int surLeft = 0; surLeft <= leftCnt; surLeft++){
+                for(int surMid=0; surMid <= midCnt; surMid++){
+                    int pos1 = surLeft + 1;
+                    int pos2 = pos1 + surMid + 1;
+
+                    vector<int> res = earliestAndLatest(nextRound,pos1,pos2);
+
+                    minRound = min(minRound, res[0]+1);
+                    maxRound = max(maxRound, res[1]+1);
+                }
+            }
+        }
+        else{
+            int fight_right = n-right+1;
+            int leftCnt = left-1;
+            int midCnt = fight_right - left - 1;
+            int remainMid = right - fight_right - 1;
+
+            for(int surLeft = 0; surLeft <= leftCnt; surLeft++){
+                for(int surMid=0; surMid <= midCnt; surMid++){
+                    int pos1 = surLeft + 1;
+                    int pos2 = pos1 + surMid + (remainMid+1)/2 + 1;
+
+                    vector<int> res = earliestAndLatest(nextRound,pos1,pos2);
+
+                    minRound = min(minRound, res[0]+1);
+                    maxRound = max(maxRound, res[1]+1);
+                }
+            }            
+        }
+
+        return {minRound,maxRound};
+    }
+};
