@@ -1,0 +1,36 @@
+class Solution {
+public:
+    bool isValid(string word) {
+        int n = word.length();
+        if (n < 3) {
+            return false;
+        }
+        int cnt = 0;
+        bool vowel = false;
+        bool cons = false;
+
+        for (int i = 0; i < n; i++) {
+            if (word[i] >= 48 && word[i] <= 57) {
+                continue;
+            } else if (word[i] == '@' || word[i] == '#' || word[i] == '$') {
+                return false;
+            } else {
+                cnt++;
+                if (!vowel && word[i] == 'a' || word[i] == 'e' ||
+                    word[i] == 'i' || word[i] == 'o' || word[i] == 'u' ||
+                    word[i] == 'A' || word[i] == 'E' || word[i] == 'I' ||
+                    word[i] == 'O' || word[i] == 'U') {
+                    vowel = true;
+                } else if (!cons) {
+                    cons = true;
+                }
+            }
+        }
+        cout << cnt;
+        if (vowel && cons && (cnt >= 2)) {
+            return true;
+        }
+
+        return false;
+    }
+};
