@@ -1,0 +1,38 @@
+class Solution {
+public:
+    void fun(int i, vector<int> &subset, vector<int> &nums, int maxPossible, int &ans)
+    {
+        if(i == nums.size())
+        {
+            int maxi = 0;
+            for(int i=0; i<subset.size(); i++)
+            {
+                maxi = maxi | subset[i];
+            }
+            if(maxi == maxPossible)
+            {
+                ans += 1;
+            }
+            return;
+        }
+
+
+        fun(i+1, subset, nums, maxPossible, ans);
+        subset.push_back(nums[i]);
+
+        fun(i+1, subset, nums, maxPossible, ans);
+        subset.pop_back();
+    }
+    int countMaxOrSubsets(vector<int>& nums) {
+        int maxPossible = 0;
+        int n = nums.size();
+        for(int i=0; i<n; i++)
+        {
+            maxPossible = maxPossible | nums[i];
+        }
+        vector<int> subset;
+        int ans=0;
+        fun(0, subset, nums, maxPossible, ans);
+        return ans;
+    }
+};
