@@ -1,0 +1,20 @@
+class Solution {
+public:
+    vector<vector<int>> generate(int nums) {
+        vector<vector<int>> ans;
+        for(int i=1; i<=nums; i++)
+        {
+            vector<int> ansRow;
+            ansRow.push_back(1);
+            long long node = 1;
+            for(int col=1; col<i; col++)
+            {
+                node = node*(i-col);
+                node = node/col;
+                ansRow.push_back(node); 
+            }
+            ans.push_back(ansRow);
+        }
+        return ans;
+    }
+};
