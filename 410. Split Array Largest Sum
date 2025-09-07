@@ -1,0 +1,45 @@
+class Solution {
+public:
+    int solve(vector<int>& nums, int k, int n, int mid) {
+        int cnt = 1;
+        int sum = 0;
+        for (int i = 0; i < n; i++) {
+            if (sum + nums[i] <= mid) {
+                sum += nums[i];
+            } else {
+                cnt++;
+                sum = nums[i];
+            }
+        }
+
+        return cnt;
+    }
+    int splitArray(vector<int>& nums, int k) {
+        int n = nums.size();
+        int l = 0;
+        int r = 0;
+
+        for (int i = 0; i < n; i++) {
+            l = max(nums[i], l);
+            r += nums[i];
+        }
+        if (n == k) {
+            return l;
+        } else if (k == 1) {
+            return r;
+        }
+        int ans = -1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;
+            int cnt = solve(nums, k, n, mid);
+            if (cnt > k) {
+                l = mid + 1;
+            } else {
+                ans = mid;
+                r = mid - 1;
+            }
+        }
+
+        return ans;
+    }
+};
