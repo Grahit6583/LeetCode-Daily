@@ -1,0 +1,55 @@
+bool isVowel(char c) {
+    c = tolower(c);
+    return c=='a'||c=='e'||c=='i'||c=='o'||c=='u';
+}
+
+string devowel(string s) {
+    for (char &c : s) {
+        if (isVowel(c)) c = '*';
+        else c = tolower(c);
+    }
+    return s;
+}
+
+class Solution {
+public:
+    vector<string> spellchecker(vector<string>& wordlist, vector<string>& queries) {
+        unordered_set<string> exact(wordlist.begin(), wordlist.end());
+        unordered_map<string,string> caseInsensitive;
+        unordered_map<string,string> vowelInsensitive;
+
+        for (auto &w : wordlist) {
+            string lower = w;
+            for (auto &c : lower) c = tolower(c);
+
+            if (!caseInsensitive.count(lower)) caseInsensitive[lower] = w;
+
+            string dv = devowel(w);
+            if (!vowelInsensitive.count(dv)) vowelInsensitive[dv] = w;
+        }
+
+        vector<string> ans;
+        for (auto &q : queries) {
+            if (exact.count(q)) {                     
+                ans.push_back(q);
+                continue;
+            }
+
+            string lower = q;
+            for (auto &c : lower) c = tolower(c);
+            if (caseInsensitive.count(lower)) {       
+                ans.push_back(caseInsensitive[lower]);
+                continue;
+            }
+
+            string dv = devowel(q);
+            if (vowelInsensitive.count(dv)) {         
+                ans.push_back(vowelInsensitive[dv]);
+                continue;
+            }
+
+            ans.push_back("");                        
+        }
+        return ans;
+    }
+};
