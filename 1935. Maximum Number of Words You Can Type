@@ -1,0 +1,28 @@
+class Solution {
+public:
+    int canBeTypedWords(string text, string brokenLetters) {
+        vector<int> hash(27,0);
+        int n = brokenLetters.length();
+        for(int i=0; i<n; i++){
+            hash[brokenLetters[i]-'a']++;
+        }
+
+        stringstream ss(text);
+        int cnt = 0;
+        string word;
+        while(ss >> word){
+            bool flag = true;
+            for(char ch : word){
+                if(hash[ch - 'a']){
+                    flag = false;
+                    break;
+                }
+            }
+            if(flag){
+                cnt++;
+            }
+        }
+
+        return cnt;
+    }
+};
