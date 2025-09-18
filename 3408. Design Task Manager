@@ -1,0 +1,41 @@
+class TaskManager {
+    unordered_map<int, pair<int,int>> mp; // taskId -> {priority, userId}
+    priority_queue<vector<int>> pq; // {priority, taskId, userId}
+
+public:
+    TaskManager(vector<vector<int>>& tasks) {
+        for (auto &t : tasks) {
+            mp[t[1]] = {t[2], t[0]};
+            pq.push({t[2], t[1], t[0]});
+        }
+    }
+
+    void add(int userId, int taskId, int priority) {
+        mp[taskId] = {priority, userId};
+        pq.push({priority, taskId, userId});
+    }
+
+    void edit(int taskId, int newPriority) {
+        auto [oldPriority, userId] = mp[taskId];
+        mp[taskId] = {newPriority, userId};
+        pq.push({newPriority, taskId, userId}); // keep both old & new, discard old later
+    }
+
+    void rmv(int taskId) {
+        mp.erase(taskId); // lazy deletion: don’t touch pq
+    }
+
+    int execTop() {
+        while (!pq.empty()) {
+            auto top = pq.top();
+            int priority = top[0], taskId = top[1], userId = top[2];
+            if (mp.count(taskId) && mp[taskId] == make_pair(priority, userId)) {
+                pq.pop();
+                mp.erase(taskId);
+                return userId;
+            }
+            pq.pop(); // discard outdated/removed entry
+        }
+        return -1;
+    }
+};
