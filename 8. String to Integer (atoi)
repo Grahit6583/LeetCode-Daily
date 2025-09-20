@@ -1,0 +1,51 @@
+class Solution {
+public:
+    int myAtoi(string s) {
+        int n = s.length();
+        string ans = "";
+        bool spaces = true;
+        bool sign = true;
+        bool zeros = true;
+        for(int i=0; i<n; i++){
+            if(s[i] == ' ' && spaces){
+                continue;
+            }
+            else if((s[i] == '-' || s[i] == '+') && sign){
+                sign = false;
+                spaces = false;
+                ans += s[i];
+            }
+            else if(s[i] == '0' && zeros){
+                sign = false;
+                spaces = false;
+                continue;
+            }
+            else if(s[i] >= 48 && s[i] <= 57){
+                sign = false;
+                zeros = false;
+                spaces = false;
+                ans += s[i];
+            }
+            else{
+                break;
+            }
+        }
+        cout<<ans;
+        int l = ans.size();
+        if((l == 0) || (l == 1 && (ans[0] == '-' || ans[0] == '+'))){
+            return 0;
+        }
+
+        if(l > 10){
+            ans = ans.substr(0,12);
+        }
+        long long d = stol(ans);
+        if(d > 2147483647){
+            return 2147483647;
+        }
+        else if(d < -2147483648){
+            return -2147483648;
+        }
+        return (int)d;
+    }
+};
