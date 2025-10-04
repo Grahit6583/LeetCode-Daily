@@ -1,0 +1,30 @@
+class Solution {
+public:
+    void generate(int n, string &s, vector<string>& result, int cnt) {
+        if (s.size() == (2 * n)) {
+            if (cnt == 0) {
+                result.push_back(s);
+            }
+            return;
+        }
+        if (cnt < n) {
+            s += '(';
+            generate(n, s, result, cnt + 1);
+            s.pop_back();
+        }
+        if (cnt > 0) {
+            s += ')';
+            generate(n, s, result, cnt - 1);
+            s.pop_back();
+        }
+    }
+    vector<string> generateParenthesis(int n) {
+        if(n==1){
+            return {"()"};
+        }
+        vector<string> res;
+        string s = "";
+        generate(n,s, res, 0);
+        return res;
+    }
+};
