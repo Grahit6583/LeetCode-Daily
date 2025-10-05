@@ -1,0 +1,47 @@
+class Solution {
+public:
+    void dfs(int x, int y, vector<vector<bool>> &vis, vector<vector<int>> &heights, int m, int n){
+        vis[x][y] = true;
+
+        vector<vector<int>> directions = {{-1,0},{1,0},{0,-1},{0,1}};
+
+        for(auto dir : directions){
+            int newx = x+dir[0];
+            int newy = y+dir[1];
+
+            if(isValid(newx,newy,m,n) && !vis[newx][newy] && heights[newx][newy] >= heights[x][y]){
+                dfs(newx,newy,vis,heights,m,n);
+            }
+        }
+    }
+
+    bool isValid(int x, int y, int m, int n){
+        return ((x>=0 && x<m) && (y>=0 && y<n));
+    }
+    vector<vector<int>> pacificAtlantic(vector<vector<int>>& heights) {
+        int m = heights.size();
+        int n = heights[0].size();
+        vector<vector<bool>> Pacific_vis(m,vector<bool>(n,false));
+        vector<vector<bool>> Atlantic_vis(m,vector<bool>(n,false));
+        for(int i=0; i<m; i++){
+            dfs(i,0,Pacific_vis,heights,m,n);
+            dfs(i,n-1,Atlantic_vis,heights,m,n);
+        }
+
+        for(int j=0; j<n; j++){
+            dfs(0,j,Pacific_vis,heights,m,n);
+            dfs(m-1,j,Atlantic_vis,heights,m,n);
+        }
+
+        vector<vector<int>> res;
+        for(int i=0; i<m; i++){
+            for(int j=0; j<n; j++){
+                if(Pacific_vis[i][j] && Atlantic_vis[i][j]){
+                    res.push_back({i,j});
+                }
+            }
+        }
+
+        return res;
+    }
+};
