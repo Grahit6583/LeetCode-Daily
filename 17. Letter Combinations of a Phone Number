@@ -1,0 +1,54 @@
+class Solution {
+public:
+    void solve(int i, map<char,string> &mp, vector<string> &ans, string &digits, string temp, int n){
+        if(i==n){
+            ans.push_back(temp);
+            return;
+        }
+
+        string s = mp[digits[i]];
+        int t = s.length();
+        for(int j=0; j<t; j++){
+            solve(i+1,mp,ans,digits,temp+s[j],n);
+        }
+    }
+    vector<string> letterCombinations(string digits) {
+        int n = digits.length();
+        if(n==0){
+            return {};
+        }
+        map<char,string> mp;
+        for(int i=0; i<n; i++){
+            switch (digits[i]){
+                case '2':
+                    mp['2'] = "abc";
+                    break;
+                case '3':
+                    mp['3'] = "def";
+                    break;
+                case '4':
+                    mp['4'] = "ghi";
+                    break;
+                case '5':
+                    mp['5'] = "jkl";
+                    break;
+                case '6':
+                    mp['6'] = "mno";
+                    break;
+                case '7':
+                    mp['7'] = "pqrs";
+                    break;
+                case '8':
+                    mp['8'] = "tuv";
+                    break;
+                case '9':
+                    mp['9'] = "wxyz";
+                    break;
+            }    
+        }
+        vector<string> ans;
+        string temp = "";
+        solve(0,mp,ans,digits,temp,n);
+        return ans;
+    }
+};
