@@ -1,0 +1,19 @@
+class Solution {
+public:
+    int maxOperations(string s) {
+        int n = s.length();
+        int cnt1 = 0;
+        int opr = 0;
+
+        for(int i=0; i<n; i++){
+            if(s[i] == '1'){
+                cnt1++;
+            }
+            else if(i+1 == n || s[i+1] == '1'){
+                opr += cnt1;
+            }
+        }
+
+        return opr;
+    }
+};
