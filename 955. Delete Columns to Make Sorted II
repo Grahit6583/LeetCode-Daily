@@ -1,0 +1,30 @@
+class Solution {
+public:
+    int minDeletionSize(vector<string>& strs) {
+        int n = strs.size();
+        int m = strs[0].size();
+        vector<bool> v(n, false);
+        int cnt = 0;
+
+        for (int j=0; j < m; j++) {
+            bool flag = false;
+            for (int i = 0; i < n - 1; i++) {
+                if (!v[i] && strs[i][j] > strs[i + 1][j]) {
+                    flag = true;
+                    cnt++;
+                    break;
+                }
+            }
+
+            if (flag) {
+                continue;
+            }
+
+            for (int k = 0; k < n - 1; k++) {
+                v[k] = v[k] | (strs[k][j] < strs[k + 1][j]);
+            }
+        }
+
+        return cnt;
+    }
+};
